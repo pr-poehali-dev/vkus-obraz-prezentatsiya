@@ -9,6 +9,7 @@ const Index = () => {
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedEvent, setSelectedEvent] = useState('');
   const [uploadedImage, setUploadedImage] = useState(false);
+  const [showOutfits, setShowOutfits] = useState(false);
 
   const cities = [
     { name: 'Москва', temp: '-5°C', weather: 'Снег' },
@@ -52,6 +53,37 @@ const Index = () => {
   const handleImageUpload = () => {
     setUploadedImage(true);
   };
+
+  const handleGenerateOutfits = () => {
+    setShowOutfits(true);
+  };
+
+  const outfits = [
+    {
+      id: 1,
+      name: 'Деловой шик',
+      image: 'https://cdn.poehali.dev/projects/89cef50a-4417-4d23-87e9-17979a79b11d/files/d79a2fcb-f1a3-4ad1-9f60-0fec7a5fefe7.jpg',
+      items: ['Пурпурный блейзер', 'Белая рубашка', 'Классические брюки'],
+      suitable: 'Деловая встреча',
+      weather: 'Идеально для -5°C'
+    },
+    {
+      id: 2,
+      name: 'Вечерний гламур',
+      image: 'https://cdn.poehali.dev/projects/89cef50a-4417-4d23-87e9-17979a79b11d/files/9290d6e0-f182-40f4-9b96-c7a84278b3ca.jpg',
+      items: ['Платье с пайетками', 'Туфли на каблуке', 'Клатч'],
+      suitable: 'Вечеринка',
+      weather: 'Для помещения'
+    },
+    {
+      id: 3,
+      name: 'Элегантный кэжуал',
+      image: 'https://cdn.poehali.dev/projects/89cef50a-4417-4d23-87e9-17979a79b11d/files/40a6a748-c7dd-41b9-82af-b2094755c03c.jpg',
+      items: ['Пурпурный свитер', 'Темные джинсы', 'Стильные аксессуары'],
+      suitable: 'Ужин в ресторане',
+      weather: 'Комфортно в любую погоду'
+    }
+  ];
 
   const currentWeather = cities.find(c => c.name === selectedCity);
 
@@ -189,15 +221,91 @@ const Index = () => {
           </Card>
         </div>
 
-        {selectedCity && uploadedImage && selectedEvent && (
+        {selectedCity && uploadedImage && selectedEvent && !showOutfits && (
           <div className="text-center mb-12 animate-fade-in">
             <Button 
-              size="lg" 
+              size="lg"
+              onClick={handleGenerateOutfits}
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-6 text-lg rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 animate-glow"
             >
               <Icon name="Sparkles" size={24} className="mr-2" />
               Подобрать образ
             </Button>
+          </div>
+        )}
+
+        {showOutfits && (
+          <div className="mb-16 animate-fade-in">
+            <h2 className="text-4xl font-bold text-center mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Подобранные образы
+            </h2>
+            <p className="text-center text-purple-700 mb-8 text-lg">
+              На основе погоды в городе {selectedCity} и вашего мероприятия
+            </p>
+            <div className="grid md:grid-cols-3 gap-8">
+              {outfits.map((outfit, index) => (
+                <Card 
+                  key={outfit.id} 
+                  className="hover:shadow-2xl transition-all duration-300 border-purple-200 hover:scale-105 animate-slide-up overflow-hidden"
+                  style={{ animationDelay: `${index * 0.15}s` }}
+                >
+                  <div className="relative">
+                    <img 
+                      src={outfit.image} 
+                      alt={outfit.name}
+                      className="w-full h-64 object-cover"
+                    />
+                    <div className="absolute top-4 right-4">
+                      <Badge className="bg-purple-600 text-white">
+                        <Icon name="Heart" size={16} className="mr-1" />
+                        Сохранить
+                      </Badge>
+                    </div>
+                  </div>
+                  <CardHeader>
+                    <CardTitle className="text-2xl">{outfit.name}</CardTitle>
+                    <CardDescription className="flex items-center gap-2">
+                      <Icon name="Check" size={16} className="text-green-600" />
+                      {outfit.suitable}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <p className="text-sm font-medium text-purple-700 mb-2">Состав образа:</p>
+                      <ul className="space-y-1">
+                        {outfit.items.map((item, idx) => (
+                          <li key={idx} className="text-sm text-purple-600 flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 bg-purple-500 rounded-full" />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-purple-50 p-3 rounded-lg">
+                      <div className="flex items-center gap-2 text-sm text-purple-700">
+                        <Icon name="Thermometer" size={16} />
+                        <span>{outfit.weather}</span>
+                      </div>
+                    </div>
+                    <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
+                      <Icon name="ShoppingBag" size={18} className="mr-2" />
+                      Выбрать этот образ
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="text-center mt-8">
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={() => setShowOutfits(false)}
+                className="border-purple-300 text-purple-700 hover:bg-purple-50"
+              >
+                <Icon name="RefreshCw" size={20} className="mr-2" />
+                Подобрать другие образы
+              </Button>
+            </div>
           </div>
         )}
 
