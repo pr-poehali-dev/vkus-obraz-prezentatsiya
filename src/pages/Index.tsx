@@ -11,6 +11,7 @@ const Index = () => {
   const [uploadedImage, setUploadedImage] = useState(false);
   const [showOutfits, setShowOutfits] = useState(false);
   const [outfitFilter, setOutfitFilter] = useState('all');
+  const [selectedTip, setSelectedTip] = useState<number | null>(null);
 
   const cities = [
     { name: 'Москва', temp: '-5°C', weather: 'Снег', humidity: '75%', wind: '5 м/с' },
@@ -31,24 +32,32 @@ const Index = () => {
 
   const tips = [
     {
+      id: 1,
       title: 'Многослойность - ключ к успеху',
       description: 'В 2025 году актуальны образы, которые можно адаптировать под температуру помещения',
-      icon: 'Layers'
+      icon: 'Layers',
+      fullInfo: 'Многослойность — это не просто тренд, а практичное решение для любой погоды. Начинайте с базовой майки или водолазки, добавьте рубашку или свитер, завершите пиджаком или кардиганом. Так вы сможете легко регулировать тепло, снимая или добавляя слои. Важно: слои должны быть разных фактур и длины, чтобы создавать глубину и интерес.'
     },
     {
+      id: 2,
       title: 'Цветовая палитра сезона',
       description: 'Пурпурные, лиловые и фиолетовые оттенки - тренд года',
-      icon: 'Palette'
+      icon: 'Palette',
+      fullInfo: 'Пурпурные оттенки 2025 года олицетворяют сочетание креативности и элегантности. Лавандовый, фиалковый, сливовый — эти цвета легко сочетаются с нейтральными оттенками: белым, черным, бежевым. Для смелых образов попробуйте total look в пурпурном цвете, для базы — добавьте один яркий акцент.'
     },
     {
+      id: 3,
       title: 'Устойчивая мода',
       description: 'Используйте вещи из гардероба повторно в разных комбинациях',
-      icon: 'Recycle'
+      icon: 'Recycle',
+      fullInfo: 'Устойчивая мода — это осознанное потребление. Создайте капсульный гардероб из качественных базовых вещей, которые легко комбинируются между собой. 10-15 вещей могут создать более 30 разных образов! При покупке задавайте вопрос: “С чем я буду это носить?”. Выбирайте естественные материалы и вневременные крои.'
     },
     {
+      id: 4,
       title: 'Аксессуары решают всё',
       description: 'Один образ можно трансформировать с помощью правильных аксессуаров',
-      icon: 'Watch'
+      icon: 'Watch',
+      fullInfo: 'Аксессуары — самый простой способ обновить гардероб без крупных трат. Одно черное платье становится деловым с пиджаком и часами, вечерним с украшениями и клатчем, кэжуал со сникерсами и рюкзаком. Правило 2025 года: меньше, но лучше. 2-3 качественных аксессуара лучше, чем множество мелких деталей.'
     }
   ];
 
@@ -393,18 +402,33 @@ const Index = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {tips.map((tip, index) => (
               <Card 
-                key={index} 
-                className="hover:shadow-xl transition-all duration-300 border-purple-200 hover:scale-105 animate-slide-up"
+                key={tip.id} 
+                className="hover:shadow-xl transition-all duration-300 border-purple-200 hover:scale-105 animate-slide-up cursor-pointer"
                 style={{ animationDelay: `${0.4 + index * 0.1}s` }}
+                onClick={() => setSelectedTip(selectedTip === tip.id ? null : tip.id)}
               >
                 <CardHeader>
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-3">
                     <Icon name={tip.icon as any} size={24} className="text-white" />
                   </div>
-                  <CardTitle className="text-lg">{tip.title}</CardTitle>
+                  <CardTitle className="text-lg flex items-center justify-between">
+                    <span>{tip.title}</span>
+                    <Icon 
+                      name={selectedTip === tip.id ? "ChevronUp" : "ChevronDown"} 
+                      size={20} 
+                      className="text-purple-600"
+                    />
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-purple-700 text-sm leading-relaxed">{tip.description}</p>
+                  {selectedTip === tip.id && (
+                    <div className="mt-4 pt-4 border-t border-purple-200 animate-fade-in">
+                      <p className="text-purple-600 text-sm leading-relaxed">
+                        {tip.fullInfo}
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}
