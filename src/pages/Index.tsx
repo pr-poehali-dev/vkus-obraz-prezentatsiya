@@ -10,6 +10,7 @@ const Index = () => {
   const [selectedEvent, setSelectedEvent] = useState('');
   const [uploadedImage, setUploadedImage] = useState(false);
   const [showOutfits, setShowOutfits] = useState(false);
+  const [outfitFilter, setOutfitFilter] = useState('all');
 
   const cities = [
     { name: 'Москва', temp: '-5°C', weather: 'Снег', humidity: '75%', wind: '5 м/с' },
@@ -66,6 +67,7 @@ const Index = () => {
       image: 'https://cdn.poehali.dev/projects/89cef50a-4417-4d23-87e9-17979a79b11d/files/d79a2fcb-f1a3-4ad1-9f60-0fec7a5fefe7.jpg',
       items: ['Пурпурный блейзер', 'Белая рубашка', 'Классические брюки'],
       suitable: 'Деловая встреча',
+      eventType: 'business',
       weather: 'Идеально для -5°C'
     },
     {
@@ -74,6 +76,7 @@ const Index = () => {
       image: 'https://cdn.poehali.dev/projects/89cef50a-4417-4d23-87e9-17979a79b11d/files/9290d6e0-f182-40f4-9b96-c7a84278b3ca.jpg',
       items: ['Платье с пайетками', 'Туфли на каблуке', 'Клатч'],
       suitable: 'Вечеринка',
+      eventType: 'party',
       weather: 'Для помещения'
     },
     {
@@ -82,9 +85,45 @@ const Index = () => {
       image: 'https://cdn.poehali.dev/projects/89cef50a-4417-4d23-87e9-17979a79b11d/files/40a6a748-c7dd-41b9-82af-b2094755c03c.jpg',
       items: ['Пурпурный свитер', 'Темные джинсы', 'Стильные аксессуары'],
       suitable: 'Ужин в ресторане',
+      eventType: 'dinner',
       weather: 'Комфортно в любую погоду'
     }
   ];
+
+  const trends = [
+    {
+      id: 1,
+      title: 'Пурпурная палитра',
+      description: 'Главный цвет 2025 года - оттенки пурпурного, лилового и фиолетового',
+      image: 'https://cdn.poehali.dev/projects/89cef50a-4417-4d23-87e9-17979a79b11d/files/37fd6882-8524-472e-b512-30bc21588d68.jpg',
+      icon: 'Palette'
+    },
+    {
+      id: 2,
+      title: 'Устойчивая мода',
+      description: 'Эко-материалы и переработанные ткани - не просто тренд, а ответственность',
+      image: 'https://cdn.poehali.dev/projects/89cef50a-4417-4d23-87e9-17979a79b11d/files/3ad290fc-cbad-42e5-bffb-50b12b2aa9ce.jpg',
+      icon: 'Leaf'
+    },
+    {
+      id: 3,
+      title: 'Оверсайз и многослойность',
+      description: 'Свободный крой и умение сочетать слои - ключ к стильному образу',
+      image: 'https://cdn.poehali.dev/projects/89cef50a-4417-4d23-87e9-17979a79b11d/files/800fab7f-3988-4d6f-9b8d-07088885593c.jpg',
+      icon: 'Layers'
+    },
+    {
+      id: 4,
+      title: 'Минимализм в аксессуарах',
+      description: 'Меньше - значит лучше. Лаконичные украшения подчеркивают стиль',
+      image: 'https://cdn.poehali.dev/projects/89cef50a-4417-4d23-87e9-17979a79b11d/files/d79a2fcb-f1a3-4ad1-9f60-0fec7a5fefe7.jpg',
+      icon: 'Sparkles'
+    }
+  ];
+
+  const filteredOutfits = outfitFilter === 'all' 
+    ? outfits 
+    : outfits.filter(outfit => outfit.eventType === outfitFilter);
 
   const currentWeather = cities.find(c => c.name === selectedCity);
 
@@ -255,11 +294,33 @@ const Index = () => {
             <h2 className="text-4xl font-bold text-center mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               Подобранные образы
             </h2>
-            <p className="text-center text-purple-700 mb-8 text-lg">
+            <p className="text-center text-purple-700 mb-6 text-lg">
               На основе погоды в городе {selectedCity} и вашего мероприятия
             </p>
+            
+            <div className="flex justify-center gap-3 mb-8 flex-wrap">
+              <Button 
+                variant={outfitFilter === 'all' ? 'default' : 'outline'}
+                onClick={() => setOutfitFilter('all')}
+                className={outfitFilter === 'all' ? 'bg-gradient-to-r from-purple-600 to-pink-600' : 'border-purple-300 text-purple-700'}
+              >
+                Все образы
+              </Button>
+              {events.map(event => (
+                <Button 
+                  key={event.id}
+                  variant={outfitFilter === event.id ? 'default' : 'outline'}
+                  onClick={() => setOutfitFilter(event.id)}
+                  className={outfitFilter === event.id ? 'bg-gradient-to-r from-purple-600 to-pink-600' : 'border-purple-300 text-purple-700'}
+                >
+                  <Icon name={event.icon as any} size={16} className="mr-2" />
+                  {event.name}
+                </Button>
+              ))}
+            </div>
+            
             <div className="grid md:grid-cols-3 gap-8">
-              {outfits.map((outfit, index) => (
+              {filteredOutfits.map((outfit, index) => (
                 <Card 
                   key={outfit.id} 
                   className="hover:shadow-2xl transition-all duration-300 border-purple-200 hover:scale-105 animate-slide-up overflow-hidden"
@@ -345,6 +406,39 @@ const Index = () => {
                 <CardContent>
                   <p className="text-purple-700 text-sm leading-relaxed">{tip.description}</p>
                 </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-16">
+          <h2 className="text-4xl font-bold text-center mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Тренды моды 2025
+          </h2>
+          <p className="text-center text-purple-700 mb-8 text-lg">
+            Что будет актуально в этом году
+          </p>
+          <div className="grid md:grid-cols-2 gap-6 mb-16">
+            {trends.map((trend, index) => (
+              <Card 
+                key={trend.id}
+                className="hover:shadow-2xl transition-all duration-300 border-purple-200 overflow-hidden animate-slide-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="grid md:grid-cols-2 gap-0">
+                  <img 
+                    src={trend.image} 
+                    alt={trend.title}
+                    className="w-full h-full object-cover min-h-[200px]"
+                  />
+                  <div className="p-6 flex flex-col justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4">
+                      <Icon name={trend.icon as any} size={24} className="text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-purple-900 mb-3">{trend.title}</h3>
+                    <p className="text-purple-700 leading-relaxed">{trend.description}</p>
+                  </div>
+                </div>
               </Card>
             ))}
           </div>
