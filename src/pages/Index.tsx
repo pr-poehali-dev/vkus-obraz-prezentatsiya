@@ -12,19 +12,20 @@ const Index = () => {
   const [showOutfits, setShowOutfits] = useState(false);
 
   const cities = [
-    { name: 'Москва', temp: '-5°C', weather: 'Снег' },
-    { name: 'Санкт-Петербург', temp: '-3°C', weather: 'Облачно' },
-    { name: 'Казань', temp: '-8°C', weather: 'Ясно' },
-    { name: 'Сочи', temp: '+12°C', weather: 'Дождь' },
-    { name: 'Екатеринбург', temp: '-10°C', weather: 'Снег' }
+    { name: 'Москва', temp: '-5°C', weather: 'Снег', humidity: '75%', wind: '5 м/с' },
+    { name: 'Санкт-Петербург', temp: '-3°C', weather: 'Облачно', humidity: '80%', wind: '7 м/с' },
+    { name: 'Казань', temp: '-8°C', weather: 'Ясно', humidity: '65%', wind: '3 м/с' },
+    { name: 'Сочи', temp: '+12°C', weather: 'Дождь', humidity: '90%', wind: '4 м/с' },
+    { name: 'Екатеринбург', temp: '-10°C', weather: 'Снег', humidity: '70%', wind: '6 м/с' },
+    { name: 'Томск', temp: '-12°C', weather: 'Снег', humidity: '68%', wind: '4 м/с' }
   ];
 
   const events = [
-    { id: 'business', name: 'Деловая встреча', icon: 'Briefcase' },
-    { id: 'party', name: 'Вечеринка', icon: 'PartyPopper' },
-    { id: 'dinner', name: 'Ужин в ресторане', icon: 'Utensils' },
-    { id: 'casual', name: 'Прогулка', icon: 'Footprints' },
-    { id: 'sport', name: 'Спортивное мероприятие', icon: 'Dumbbell' }
+    { id: 'business', name: 'Деловая встреча', icon: 'Briefcase', description: 'Переговоры, презентация, офисная работа' },
+    { id: 'party', name: 'Вечеринка', icon: 'PartyPopper', description: 'Клубная вечеринка, день рождения, корпоратив' },
+    { id: 'dinner', name: 'Ужин в ресторане', icon: 'Utensils', description: 'Романтический ужин, встреча с друзьями' },
+    { id: 'casual', name: 'Прогулка', icon: 'Footprints', description: 'Свидание, шоппинг, неформальная встреча' },
+    { id: 'sport', name: 'Спортивное мероприятие', icon: 'Dumbbell', description: 'Фитнес, спортзал, активный отдых' }
   ];
 
   const tips = [
@@ -133,7 +134,7 @@ const Index = () => {
               </Select>
               
               {currentWeather && (
-                <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-lg animate-fade-in">
+                <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-lg animate-fade-in space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-purple-700 font-medium">Сейчас в городе</p>
@@ -142,6 +143,16 @@ const Index = () => {
                     <div className="text-right">
                       <Icon name="Cloud" size={48} className="text-purple-500" />
                       <p className="text-sm text-purple-700">{currentWeather.weather}</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-purple-200">
+                    <div className="flex items-center gap-2 text-sm text-purple-700">
+                      <Icon name="Droplets" size={16} />
+                      <span>{currentWeather.humidity}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-purple-700">
+                      <Icon name="Wind" size={16} />
+                      <span>{currentWeather.wind}</span>
                     </div>
                   </div>
                 </div>
@@ -206,15 +217,20 @@ const Index = () => {
               </Select>
               
               {selectedEvent && (
-                <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-lg animate-fade-in">
+                <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-lg animate-fade-in space-y-2">
                   <img 
                     src="https://cdn.poehali.dev/projects/89cef50a-4417-4d23-87e9-17979a79b11d/files/7e64d490-84a7-4495-9cef-27aa6f85c1ff.jpg" 
                     alt="Мероприятие" 
-                    className="w-full h-32 object-cover rounded-lg mb-2"
+                    className="w-full h-32 object-cover rounded-lg"
                   />
-                  <p className="text-sm text-purple-700 text-center font-medium">
-                    {events.find(e => e.id === selectedEvent)?.name}
-                  </p>
+                  <div>
+                    <p className="text-sm text-purple-700 font-medium">
+                      {events.find(e => e.id === selectedEvent)?.name}
+                    </p>
+                    <p className="text-xs text-purple-600 mt-1">
+                      {events.find(e => e.id === selectedEvent)?.description}
+                    </p>
+                  </div>
                 </div>
               )}
             </CardContent>
